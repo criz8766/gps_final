@@ -1,0 +1,76 @@
+// Jenkinsfile
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME_BASE = "ghcr.io/${env.GITHUB_USER_CI}/${env.GITHUB_REPO_NAME_CI}/pacientes" // Ajusta según tu usuario y nombre de repo/imagen
+        TAG_NAME = "ci-${env.BUILD_NUMBER}"
+        DOCKERFILE_PATH = "./pacientes/Dockerfile" // O solo "Dockerfile" si el Jenkinsfile está en /pacientes
+        BUILD_CONTEXT = "./pacientes"        // O "." si el Jenkinsfile está en /pacientes
+        GHCR_CREDENTIALS_ID = 'github-token-ghcr' // El ID de la credencial que creaste en Jenkins
+    }
+
+    stages {
+        stage('Checkout SCM') {
+            steps {
+                echo 'Obteniendo el código desde Git...'
+                checkout scm
+                script {
+                    // Extraer nombre de usuario y repo de la URL de GIT (si es de GitHub)
+                    def repoUrl = scm.getUserRemoteConfigs()[0].getUrl()
+                    if (repoUrl.contains("github.com/")) {
+                        def matcher = (repoUrl =~ /github.com[\/:]([^\/]+)\/([^\.]+)\.git/)
+                        if (matcher.find()) {
+                            env.GITHUB_USER_CI = matcher.group(1)
+                            env.GITHUB_REPO_NAME_CI = matcher.group(2)
+                            echo "GitHub User/Org: ${env.GITHUB_USER_CI}, Repo: ${env.GITHUB_REPO_NAME_CI}"
+                            // Actualizar IMAGE_NAME_BASE ya que ahora tenemos los valores
+                            IMAGE_NAME_BASE = "ghcr.io/${env.GITHUB_USER_CI}/${env.GITHUB_REPO_NAME_CI}/pacientes"
+                        } else {
+                            echo "No se pudo extraer usuario/repo de la URL de GitHub: ${repoUrl}"
+                            // Usar un fallback o fallar el build
+                            IMAGE_NAME_BASE = "ghcr.io/tu-usuario-o-org-github/tu-repo/pacientes" // Necesitas un fallback aquí
+                        }
+                    } else {
+                         echo "El repositorio no parece ser de GitHub, usa un IMAGE_NAME_BASE predefinido."
+                         IMAGE_NAME_BASE = "ghcr.io/tu-usuario-o-org-github/tu-repo/pacientes" // Necesitas un fallback aquí
+                    }
+                }
+            }
+        }
+
+        stage('Build Image with Sudo Podman') {
+            steps {
+                script {
+                    def fullImageName = "${IMAGE_NAME_BASE}:${TAG_NAME}"
+                    echo "Construyendo imagen Podman con sudo: ${fullImageName}"
+                    echo "Usando Dockerfile: ${DOCKERFILE_PATH}"
+                    echo "Con contexto de build: ${BUILD_CONTEXT}"
+                    sh "sudo /usr/bin/podman build -t ${fullImageName} -f ${DOCKERFILE_PATH} ${BUILD_CONTEXT}"
+                    echo "Imagen construida: ${fullImageName}"
+                }
+            }
+        }
+
+        stage('Push Image to GHCR') {
+            steps {
+                script {
+                    def fullImageName = "${IMAGE_NAME_BASE}:${TAG_NAME}"
+                    echo "Empujando imagen ${fullImageName} a GHCR..."
+                    // Usar las credenciales almacenadas en Jenkins
+                    withCredentials([usernamePassword(credentialsId: env.GHCR_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_TOKEN')]) {
+                        sh "sudo /usr/bin/podman login ghcr.io -u ${GIT_USER} -p ${GIT_TOKEN}"
+                        sh "sudo /usr/bin/podman push ${fullImageName}"
+                        echo "Imagen empujada a ${fullImageName}"
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline finalizado.'
+        }
+        // ... (success, failure) ...
+    }
+}

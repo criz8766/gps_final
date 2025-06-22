@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1 # Le decimos a Kubernetes que queremos una instancia (Pod) de Nginx
+  selector:
+    matchLabels:
+      app: nginx # Este selector conecta el Deployment con los Pods que gestiona
+  template:
+    metadata:
+      labels:
+        app: nginx # Los Pods creados por este Deployment tendrán esta etiqueta
+    spec:
+      containers:
+      - name: nginx-container
+        image: docker.io/library/nginx:1.25-alpine # Imagen a usar, con el registro completo
+        ports:
+        - containerPort: 80 # El puerto en el que Nginx escucha dentro del contenedor
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+spec:
+  selector:
+    app: nginx # Este selector conecta el Service con los Pods que tienen la etiqueta app:nginx
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80       # El puerto por el cual el Service será accesible DENTRO del clúster
+      targetPort: 80 # El puerto en los Pods (containerPort) al que este Service redirigirá el tráfico
+  type: NodePort     # Expone el Service en un puerto estático en cada Nodo del clúster.
+                     # Esto nos permitirá acceder a Nginx desde fuera del clúster (desde tu máquina host).

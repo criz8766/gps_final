@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+kafka-python  # Para el consumidor Kafka
+pymongo       # Driver de Python para MongoDB
+python-dotenv # Para cargar variables de entorno

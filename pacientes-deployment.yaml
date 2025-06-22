@@ -1,0 +1,38 @@
+# Archivo: pacientes-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pacientes-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pacientes
+  template:
+    metadata:
+      labels:
+        app: pacientes
+    spec:
+      containers:
+      - name: pacientes # Nombre simplificado
+        image: usoprototipico/pacientes-api:latest # <-- CORREGIDO
+        imagePullPolicy: Always # <-- CORREGIDO
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: pacientes-config
+        - secretRef:
+            name: pacientes-secret
+        readinessProbe:
+          httpGet:
+            path: /docs
+            port: 8000
+          initialDelaySeconds: 20
+          periodSeconds: 15
+        livenessProbe:
+          httpGet:
+            path: /docs
+            port: 8000
+          initialDelaySeconds: 45
+          periodSeconds: 30

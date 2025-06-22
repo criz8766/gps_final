@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: pacientes-api-ingress
+spec:
+  # --- LÍNEA AÑADIDA ---
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /api/pacientes
+            pathType: Prefix
+            backend:
+              service:
+                name: pacientes-service
+                port:
+                  # Asegúrate que el servicio 'pacientes-service' expone el puerto 8000
+                  number: 80

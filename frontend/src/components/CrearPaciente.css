@@ -1,0 +1,50 @@
+.crear-paciente-container {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #e3f2fd;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.crear-paciente-title {
+  text-align: center;
+  color: #1976d2;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+.input-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #1565c0;
+}
+
+.input-field {
+  width: 96%;
+  padding: 8px;
+  border: 1px solid #90caf9;
+  border-radius: 5px;
+}
+
+.submit-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.mensaje {
+  margin-top: 15px;
+  text-align: center;
+  color: #0d47a1;
+}

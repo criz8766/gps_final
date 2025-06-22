@@ -1,0 +1,16 @@
+# Archivo: pacientes-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pacientes-config  # <-- ¡ASEGÚRATE DE QUE ESTÉ ASÍ!
+data:
+  # Le damos a la aplicación las 4 variables que busca,
+  # con los valores correctos que coinciden con nuestra base de datos.
+  POSTGRES_HOST: "postgres"
+  POSTGRES_DB: "pacientesdb"
+  POSTGRES_USER: "user"
+  POSTGRES_PASSWORD: "password"
+
+  # Las variables de Kafka las dejamos como estaban.
+  KAFKA_BOOTSTRAP_SERVERS: "kafka:9092"
+  KAFKA_TOPIC: "pacientes-topic"

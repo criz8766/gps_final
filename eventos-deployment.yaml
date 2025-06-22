@@ -1,0 +1,24 @@
+# Archivo: eventos-deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventos-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventos
+  template:
+    metadata:
+      labels:
+        app: eventos
+    spec:
+      containers:
+      - name: eventos-container
+        image: usoprototipico/eventos-api:latest # <-- CORREGIDO
+        imagePullPolicy: Always # <-- CORREGIDO
+        ports:
+        - containerPort: 8001
+        envFrom:
+        - configMapRef:
+            name: eventos-config

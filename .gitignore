@@ -1,0 +1,9 @@
+# Ignorar el archivo .env específico del servicio de pacientes
+pacientes/.env
+
+# Alternativamente, si quieres ignorar todos los archivos .env en cualquier subdirectorio
+**/.env
+
+# Ignorar todos los archivos .tar
+*.tar
+

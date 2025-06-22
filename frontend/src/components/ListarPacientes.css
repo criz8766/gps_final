@@ -1,0 +1,88 @@
+/* frontend/src/components/ListarPacientes.css */
+.listar-pacientes-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f0f4f8; /* Un color de fondo ligeramente diferente para la lista */
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.listar-pacientes-title {
+  text-align: center;
+  color: #1976d2;
+  margin-bottom: 25px;
+}
+
+.pacientes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.pacientes-table th,
+.pacientes-table td {
+  border: 1px solid #b0bec5; /* Borde más suave */
+  padding: 10px 12px;
+  text-align: left;
+  color: #37474f;
+}
+
+.pacientes-table th {
+  background-color: #64b5f6; /* Un azul más claro para las cabeceras */
+  color: white;
+  font-weight: bold;
+}
+
+.pacientes-table tbody tr:nth-child(even) {
+  background-color: #e3f2fd; /* Rayas de cebra para mejor legibilidad */
+}
+
+.pacientes-table tbody tr:hover {
+  background-color: #bbdefb; /* Resaltado al pasar el mouse */
+}
+
+.listar-pacientes-mensaje {
+  margin-top: 20px;
+  text-align: center;
+  color: #0d47a1;
+  font-size: 1.1em;
+}
+
+.listar-pacientes-mensaje.error {
+  color: #c62828; /* Color rojo para mensajes de error */
+  font-weight: bold;
+}
+
+.editar-button, .eliminar-button { /* Estilos base para ambos botones */
+  padding: 6px 12px;
+  margin: 0 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.editar-button:hover, .eliminar-button:hover {
+  transform: translateY(-1px);
+}
+
+.editar-button { /* Ya no .boton-accion.editar */
+  background-color: #ffb74d; /* Naranja */
+  color: white;
+}
+.editar-button:hover {
+  background-color: #ffa726;
+}
+
+.eliminar-button { /* Ya no .boton-accion.eliminar */
+  background-color: #e57373; /* Rojo */
+  color: white;
+}
+.eliminar-button:hover {
+  background-color: #ef5350;
+}

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventos-service
+spec:
+  selector:
+    app: eventos # Debe coincidir con la etiqueta de los Pods del Deployment
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8001       # Puerto del Service DENTRO del clúster Kubernetes
+      targetPort: 8001 # Puerto en los Pods (containerPort)
+  type: NodePort     # Para acceder al /health desde fuera para pruebas

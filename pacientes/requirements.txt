@@ -1,0 +1,8 @@
+SQLAlchemy
+fastapi
+uvicorn[standard]
+psycopg2-binary
+kafka-python
+python-jose[cryptography]
+httpx
+python-dotenv

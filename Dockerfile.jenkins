@@ -1,0 +1,34 @@
+# Dockerfile.jenkins
+FROM jenkins/jenkins:lts-jdk11
+
+USER root
+
+RUN apt-get update && \
+    apt-get install -y podman uidmap sudo && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Configurar subuid y subgid para el usuario 'jenkins' (UID 1000)
+RUN echo "jenkins:100000:65536" > /etc/subuid && \
+    echo "1000:100000:65536" >> /etc/subuid && \
+    echo "jenkins:100000:65536" > /etc/subgid && \
+    echo "1000:100000:65536" >> /etc/subgid
+
+# Configurar subuid y subgid también para el usuario 'root' (UID 0)
+# Usamos un rango diferente para evitar solapamientos, aunque en este contexto simple podría no ser estrictamente necesario.
+# Podman como root no siempre necesita esto si no está usando user namespaces para sí mismo, 
+# pero sí para los contenedores que crea si estos usan user namespaces o si hay remapeo.
+# Dado el error, es mejor añadirlo.
+RUN echo "root:165536:65536" >> /etc/subuid && \
+    echo "0:165536:65536" >> /etc/subuid && \
+    echo "root:165536:65536" >> /etc/subgid && \
+    echo "0:165536:65536" >> /etc/subgid
+
+# Permitir al usuario jenkins ejecutar podman con sudo sin contraseña
+RUN echo "jenkins ALL=(ALL) NOPASSWD: /usr/bin/podman" >> /etc/sudoers 
+
+# Opcional: Verificar la creación de archivos (se verá en los logs de 'podman build' de esta imagen)
+RUN echo "--- subuid content ---" && cat /etc/subuid && \
+    echo "--- subgid content ---" && cat /etc/subgid
+
+USER jenkins
